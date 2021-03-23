@@ -36,6 +36,8 @@ class Stats():
         self.src_age = 0
         self.dst_age = 0
 
+        self.show_size = 256
+
         self.src_file = "" # use for output
 
         self.setup_signals()
@@ -76,6 +78,7 @@ class Stats():
     def setup_event(self):
         self.ui.readButton.clicked.connect(self.open_img)       # block
         self.ui.predictButton.clicked.connect(self.predict_age) # block
+        self.ui.evaluateButton.clicked.connect(self.predict_age_again) # block
         self.ui.transferButton.clicked.connect(self.edit_age) # block
         self.ui.saveButton.clicked.connect(self.save_img) # block
         self.feedback("事件系统初始化成功")
@@ -97,6 +100,11 @@ class Stats():
             [f" {v}岁左右" for v in age_interval(self.src_age).values()]
         )
 
+        self.feedback("预测年龄完成")
+
+    def predict_age_again(self):
+        self.dst_age = self.age_predictor.predict_age(self.dst_img).item()
+        self.ui.evaluateEdit.setText(f"预测年龄为{self.dst_age}")
         self.feedback("预测年龄完成")
 
     def edit_age(self):
@@ -148,7 +156,9 @@ class Stats():
         assert type(img) == np.ndarray
         assert len(img.shape) == 3
         h, w, _ = img.shape
-        q_img = QImage(img.data, w, h, w * 3, QImage.Format_RGB888)
+        resized = cv2.resize(img, (self.show_size, self.show_size), interpolation=cv2.INTER_CUBIC)
+        # q_img = QImage(img.data, w, h, w * 3, QImage.Format_RGB888)
+        q_img = QImage(resized.data, self.show_size, self.show_size, self.show_size * 3, QImage.Format_RGB888)
         q_label.setPixmap(QPixmap.fromImage(q_img))
         q_label.setAlignment(Qt.AlignCenter)
 

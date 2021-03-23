@@ -4,11 +4,10 @@ from .generator import pretrained_generator
 from torchvision import transforms
 
 class AgeEditor():
-    def __init__(self, model_file, target_size=256):
+    def __init__(self, model_file):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.generator = pretrained_generator(model_file, self.device).to(self.device)
         self.middle_size = 512
-        self.target_size = target_size
 
     def preprocess(self, img):
         """prepocess the numpy array image to fit in vgg
@@ -33,8 +32,7 @@ class AgeEditor():
         mean = torch.tensor([0.48501961, 0.45795686, 0.40760392]).reshape((3, 1, 1)).repeat(1, h, w)
         img_modif = processed[0].cpu() + mean
         recover_transform = transforms.Compose([
-            transforms.ToPILImage(),
-            transforms.Resize((self.target_size, self.target_size))
+            transforms.ToPILImage()
         ])
 
         img_modif = recover_transform(img_modif.detach())
