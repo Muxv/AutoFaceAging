@@ -1,14 +1,12 @@
 import torch
 import torch.nn.functional as F
-from .vgg import pretrained_vgg
 from torchvision import transforms
+from project.age_predictor.vgg import pretrained_vgg
+from project.config import *
 
 class AgePredictor():
-    def __init__(self, model_file, target_size=224):
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.predictor = pretrained_vgg(model_file, self.device).to(self.device)
-        self.target_size = target_size
-
+    def __init__(self, model_file):
+        self.predictor = pretrained_vgg(model_file, DEVICE).to(DEVICE)
 
     def preprocess(self, img):
         """prepocess the numpy array image to fit in vgg
@@ -28,7 +26,7 @@ class AgePredictor():
         r, g, b = torch.split(img, 1, 1)
         out = torch.cat((b, g, r), dim=1)
         out = F.interpolate(out,
-                            size=(self.target_size, self.target_size),
+                            size=(PREDICT_SIZE, PREDICT_SIZE),
                             mode='bilinear')
         out = out * 255.
         return out
@@ -42,7 +40,7 @@ class AgePredictor():
         Returns:
             pred_age(int): the predicted age of the image
         """
-        preprocessed = self.preprocess(img).to(self.device)
+        preprocessed = self.preprocess(img).to(DEVICE)
         with torch.no_grad():
             pred_age = self.predictor(preprocessed)["fc8"]
         # print(pred_age)

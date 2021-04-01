@@ -162,3 +162,10 @@ def pretrained_generator(path, device):
     generator.age_mod.load_state_dict(checkpoint["mlp_style_state_dict"])
 
     return generator
+
+
+def my_generator(path, device):
+    generator = Generator()
+    checkpoint = torch.load(path, map_location=torch.device(device))
+    generator.load_state_dict(checkpoint["gen"])
+    return generator

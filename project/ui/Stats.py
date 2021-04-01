@@ -2,6 +2,7 @@ from PySide2.QtGui import QImage, QPixmap
 from PySide2.QtWidgets import QApplication, QMessageBox, QFileDialog
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import QFile, QObject, Signal, Slot, Qt
+from project.config import *
 from PIL import Image
 
 import cv2
@@ -35,8 +36,6 @@ class Stats():
 
         self.src_age = 0
         self.dst_age = 0
-
-        self.show_size = 256
 
         self.src_file = "" # use for output
 
@@ -156,9 +155,10 @@ class Stats():
         assert type(img) == np.ndarray
         assert len(img.shape) == 3
         h, w, _ = img.shape
-        resized = cv2.resize(img, (self.show_size, self.show_size), interpolation=cv2.INTER_CUBIC)
+        resized = cv2.resize(img, (TARGET_SIZE, TARGET_SIZE), interpolation=cv2.INTER_CUBIC)
         # q_img = QImage(img.data, w, h, w * 3, QImage.Format_RGB888)
-        q_img = QImage(resized.data, self.show_size, self.show_size, self.show_size * 3, QImage.Format_RGB888)
+        q_img = QImage(resized.data, TARGET_SIZE, TARGET_SIZE, TARGET_SIZE * 3, QImage.Format_RGB888)
+        q_label.setPixmap(None)
         q_label.setPixmap(QPixmap.fromImage(q_img))
         q_label.setAlignment(Qt.AlignCenter)
 

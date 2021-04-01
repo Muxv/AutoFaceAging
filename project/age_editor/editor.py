@@ -1,13 +1,13 @@
 import torch
 import numpy as np
-from .generator import pretrained_generator
+from project.config import *
+from .generator import pretrained_generator, my_generator
 from torchvision import transforms
 
 class AgeEditor():
     def __init__(self, model_file):
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.generator = pretrained_generator(model_file, self.device).to(self.device)
-        self.middle_size = 512
+        # self.generator = pretrained_generator(model_file, DEVICE).to(DEVICE)
+        self.generator = my_generator(model_file, DEVICE).to(DEVICE)
 
     def preprocess(self, img):
         """prepocess the numpy array image to fit in vgg
@@ -20,7 +20,7 @@ class AgeEditor():
         """
         transform = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Resize((self.middle_size, self.middle_size)),
+            transforms.Resize((MIDDLE_SIZE, MIDDLE_SIZE)),
             transforms.Normalize(mean=[0.48501961, 0.45795686, 0.40760392],
                                  std=[1, 1, 1])
         ])
@@ -42,7 +42,6 @@ class AgeEditor():
 
     def edit_age(self, img, dst_age):
         """
-
         Args:
             img: the numpy array to be predicted
 
@@ -51,8 +50,8 @@ class AgeEditor():
         """
         # print(img)
 
-        preprocessed = self.preprocess(img).to(self.device)
-        dst_age = torch.tensor([dst_age]).to(self.device)
+        preprocessed = self.preprocess(img).to(DEVICE)
+        dst_age = torch.tensor([dst_age]).to(DEVICE)
         with torch.no_grad():
             _, processed, __ = self.generator(preprocessed, None, dst_age)
             # print(preprocessed)
