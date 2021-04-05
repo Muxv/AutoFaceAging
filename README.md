@@ -1,7 +1,10 @@
-# AutoFaceAging
+# AutoFaceAging Front End
 
 
-## 安装虚拟环境
+## 环境
+- `python3`
+
+## 安装前段依赖
 ```shell
 pip install -r requirements
 ```
