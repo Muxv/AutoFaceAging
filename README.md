@@ -4,7 +4,7 @@
 ## 环境
 - `python3`
 
-## 安装前段依赖
+## 安装前端依赖
 ```shell
 pip install -r requirements
 ```
