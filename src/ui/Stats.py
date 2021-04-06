@@ -1,14 +1,15 @@
 import copy
 
-from PySide2.QtGui import QPixmap
-from PySide2.QtWidgets import QWidget, QMessageBox, QFileDialog
-from PySide2.QtUiTools import QUiLoader
-from PySide2.QtCore import QFile, QObject, Signal, Slot, Qt
-from project.config import *
-from project.request.predict import predict_request
-from project.request.edit import edit_request
 from PIL import Image
 from PIL.ImageQt import ImageQt
+from PySide2.QtCore import QFile, QObject, Signal, Slot, Qt
+from PySide2.QtGui import QPixmap
+from PySide2.QtUiTools import QUiLoader
+from PySide2.QtWidgets import QMessageBox, QFileDialog
+
+from src.config import *
+from src.request.edit import edit_request
+from src.request.predict import predict_request
 
 
 def age_interval(benchmark):
@@ -39,6 +40,7 @@ class Stats():
         # self.ui.setFixedSize(self.ui.size())
         self.src_img = None  # PIL
         self.dst_img = None  # PIL
+        # self.dst_img = Image.new("RGB", (256, 256), "#FF0000")
 
         # https://www.coder.work/article/2034121
         self.src_qim = None # keep this to prevent image collapse
@@ -127,11 +129,10 @@ class Stats():
         self.feedback("转换年龄完成")
 
     def open_img(self):
-
         file_path, _ = QFileDialog.getOpenFileName(
             self.ui,  # 父窗口对象
             "选择你要转换的图片",  # 标题
-            r"./",  # 起始目录
+            r"./example/",  # 起始目录
             "图片类型 (*.png *.jpg *.bmp)"  # 选择类型过滤项，过滤内容在括号中
         )
         if file_path == "":
@@ -155,14 +156,21 @@ class Stats():
         save_path = QFileDialog.getExistingDirectory(
             self.ui,
             "选择要保存的位置",
-            "r./",
+            r"./example/",
         )
+
+        # cancel button
+        if save_path == "":
+            return
+
+        print(f"{save_path}")
+
         self.dst_img.save(f"{save_path}/new_{self.src_file}", quality=75)
         # img = cv2.cvtColor(self.dst_img.copy(), cv2.COLOR_RGB2BGR)
         # save_path = f"{save_path}/new_{self.src_file}"
         # cv2.imwrite(save_path, img)
         # self.refresh_img()
-        self.feedback(f"结果保存为{save_path}")
+        self.feedback(f"{save_path}/new_{self.src_file}")
 
     def show_img_on_label(self, where="src"):
         """show a img on a QLabel

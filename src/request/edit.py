@@ -1,6 +1,6 @@
 import requests
 from PIL import Image
-from project.config import API, EDITOR_ROUTE
+from src.config import API, EDITOR_ROUTE
 from io import BytesIO
 
 
@@ -19,12 +19,5 @@ def edit_request(image_PIL, dst_age):
 
     return_img = Image.open(BytesIO(r.content))
     return return_img
-    # modif_img = r.
-    # age = return_dict["age"]
-    # status = return_dict["status"]
-    # if status == 200:
-    #     return age
-    # else:
-    #     return -1
 
 

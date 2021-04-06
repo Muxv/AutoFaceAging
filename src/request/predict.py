@@ -1,5 +1,5 @@
 import requests
-from project.config import API, PREDICT_ROUTE
+from src.config import API, PREDICT_ROUTE
 from io import BytesIO
 
 
