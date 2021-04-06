@@ -12,7 +12,7 @@ sudo apt-get install python3-venv -y
 ## 安装前端依赖
 ```shell
 python -m venv faceaging
-source ./faceaging/bin/activate
+source ./venv/bin/activate
 pip install -r requirements
 ```
 
